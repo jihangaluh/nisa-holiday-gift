@@ -2,14 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta tag ini wajib agar pas di layar HP -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nisa's Escape - Cinematic Medusa</title>
+    <title>Nisa's Escape - Medusa Cinematic</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --gold: #d4af37;
-            --dark-overlay: rgba(0, 0, 0, 0.65);
         }
 
         body, html {
@@ -17,143 +15,137 @@
             width: 100%; height: 100%;
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0a; /* Background luar gelap pekat */
         }
 
-        /* --- VIDEO BACKGROUND --- */
-        #video-bg {
-            position: fixed;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        .overlay-dark {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--dark-overlay);
-            z-index: 0;
-        }
-
-        /* CONTAINER UTAMA (KUNCINYA DI SINI) */
         .container { 
             position: relative; 
             z-index: 10; 
-            width: 100%;
+            width: 100%; 
             height: 100%;
             display: flex;
-            justify-content: center; /* Tengah Horizontal */
-            align-items: center;    /* Tengah Vertikal */
+            justify-content: center;
+            align-items: center;
         }
 
         .layer {
             position: absolute;
-            width: 85%; /* Lebar responsif untuk HP */
-            max-width: 340px;
-            padding: 40px 25px;
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 25px;
+            width: 90%; 
+            max-width: 550px; /* Persegi Panjang Samping */
+            min-height: 350px;
+            border-radius: 30px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: all 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            
-            /* Sembunyi di awal (di bawah layar) */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Agar video tidak keluar dari border radius */
             opacity: 0;
             visibility: hidden;
-            transform: translateY(50px) scale(0.9);
+            transform: scale(0.8);
+            border: 2px solid rgba(212, 175, 55, 0.5);
         }
 
-        /* Efek Muncul Tepat di Tengah */
-        .layer.active { 
-            opacity: 1; 
-            visibility: visible;
-            transform: translateY(0) scale(1);
+        /* VIDEO DI DALAM KARTU */
+        .card-video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
         }
 
-        /* Efek Keluar */
-        .layer.out { 
-            opacity: 0; 
-            visibility: hidden;
-            transform: translateY(-50px) scale(0.9);
+        .card-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Gelap di dalam kartu agar teks terbaca */
+            z-index: -1;
         }
+
+        .layer.active { opacity: 1; visibility: visible; transform: scale(1); }
+        .layer.out { opacity: 0; visibility: hidden; transform: scale(1.1) blur(10px); }
+
+        .content { position: relative; z-index: 5; padding: 30px; }
 
         .img-profile {
-            width: 130px; height: 130px;
+            width: 110px; height: 110px;
             border-radius: 50%;
             border: 3px solid var(--gold);
             object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px var(--gold);
         }
 
-        h1 { color: var(--gold); font-size: 1.4rem; letter-spacing: 2px; margin: 0 0 15px; text-transform: uppercase; }
-        p { color: #fff; line-height: 1.6; font-size: 0.95rem; text-shadow: 1px 1px 2px #000; }
+        h1 { color: var(--gold); font-size: 1.4rem; letter-spacing: 2px; margin: 0 0 10px; text-transform: uppercase; }
+        p { color: #fff; line-height: 1.5; font-size: 0.95rem; text-shadow: 1px 1px 2px #000; }
 
         .btn {
-            margin-top: 25px;
-            background: #fff;
+            margin-top: 20px;
+            background: var(--gold);
             color: #000;
             border: none;
-            padding: 14px 30px;
+            padding: 12px 35px;
             border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
             text-transform: uppercase;
-            width: 100%; /* Tombol lebar di HP */
-            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+            font-size: 0.8rem;
         }
-
-        .btn:hover { background: var(--gold); transform: scale(1.05); }
     </style>
 </head>
 <body>
-
-    <video autoplay muted loop playsinline id="video-bg">
-        <source src="backdrop.mp4" type="video/mp4">
-    </video>
-
-    <div class="overlay-dark"></div>
 
     <audio id="bgm" loop><source src="sound.mp3" type="audio/mp3"></audio>
     <audio id="sfx-click"><source src="https://assets.mixkit.co/sfx/preview/mixkit-modern-technology-select-3124.mp3" type="audio/mp3"></audio>
 
     <div class="container">
-        <!-- Layer 1 -->
+        <!-- Semua Layer Pakai Video yang Sama -->
         <div class="layer active" id="l1">
-            <img src="nisa1.jpeg" class="img-profile">
-            <h1>WELCOME TO FREEDOM</h1>
-            <p>Halo Mba Nisa Anggota Medusa paling kece! 6 hari ke depan, dilarang mikirin kerjaan. Titik!</p>
-            <button class="btn" onclick="startExperience(1)">TERUS APA?</button>
+            <video autoplay muted loop playsinline class="card-video"><source src="backdrop.mp4" type="video/mp4"></video>
+            <div class="card-overlay"></div>
+            <div class="content">
+                <img src="nisa1.jpeg" class="img-profile">
+                <h1>WELCOME TO FREEDOM</h1>
+                <p>Halo Mba Nisa Anggota Medusa paling kece! 6 hari ke depan, dilarang mikirin kerjaan. Titik!</p>
+                <button class="btn" onclick="startExperience(1)">TERUS APA?</button>
+            </div>
         </div>
 
-        <!-- Layer 2 -->
         <div class="layer" id="l2">
-            <h1>6 HARI ESCAPE 🌴</h1>
-            <p>Nikmati liburanmu, cas dulu energinya. Medusa tanpa Mba Nisa bakal kurang satu pro-player visual nih!</p>
-            <button class="btn" onclick="go(2)">NEXT SURPRISE</button>
+            <video autoplay muted loop playsinline class="card-video"><source src="backdrop.mp4" type="video/mp4"></video>
+            <div class="card-overlay"></div>
+            <div class="content">
+                <h1>6 HARI ESCAPE 🌴</h1>
+                <p>Nikmati liburanmu, cas dulu energinya. Medusa tanpa Mba Nisa bakal kurang satu pro-player visual nih!</p>
+                <button class="btn" onclick="go(2)">NEXT SURPRISE</button>
+            </div>
         </div>
 
-        <!-- Layer 3 -->
         <div class="layer" id="l3">
-            <h1>UNO + GACOAN 🃏</h1>
-            <p>Pokoknya nanti kita UNO-an bareng, terus ke Gacoan nongkrong sampe malem! Gak ada penolakan!</p>
-            <button class="btn" onclick="go(3)">GASSS!</button>
+            <video autoplay muted loop playsinline class="card-video"><source src="backdrop.mp4" type="video/mp4"></video>
+            <div class="card-overlay"></div>
+            <div class="content">
+                <h1>UNO + GACOAN 🃏</h1>
+                <p>Pokoknya nanti kita UNO-an bareng, terus ke Gacoan nongkrong sampe malem!</p>
+                <button class="btn" onclick="go(3)">GASSS!</button>
+            </div>
         </div>
 
-        <!-- Layer 4 -->
         <div class="layer" id="l4">
-            <img src="nisa2.jpeg" class="img-profile">
-            <h1>HATI-HATI DI JALAN! ✨</h1>
-            <p>Selamat berlibur, Mba Nisa! Pergi dengan tenang, pulang dengan senang. See you!</p>
-            <button class="btn" onclick="celebrate()">CELEBRATE 🎉</button>
+            <video autoplay muted loop playsinline class="card-video"><source src="backdrop.mp4" type="video/mp4"></video>
+            <div class="card-overlay"></div>
+            <div class="content">
+                <img src="nisa2.jpeg" class="img-profile">
+                <h1>HATI-HATI DI JALAN! ✨</h1>
+                <p>Selamat berlibur, Mba Nisa! Pergi dengan tenang, pulang dengan senang. See you!</p>
+                <button class="btn" onclick="celebrate()">CELEBRATE 🎉</button>
+            </div>
         </div>
     </div>
 
@@ -162,7 +154,7 @@
         const sfx = document.getElementById('sfx-click');
 
         function startExperience(curr) {
-            bgm.play().catch(e => console.log("Audio play blocked"));
+            bgm.play().catch(e => console.log("Audio blocked"));
             go(curr);
         }
 
@@ -171,25 +163,16 @@
             sfx.play();
             const currentLayer = document.getElementById('l' + curr);
             const nextLayer = document.getElementById('l' + (curr + 1));
-            
             currentLayer.classList.remove('active');
             currentLayer.classList.add('out');
-            
             if(nextLayer) {
-                setTimeout(() => {
-                    nextLayer.classList.add('active');
-                }, 100);
+                setTimeout(() => { nextLayer.classList.add('active'); }, 150);
             }
         }
 
         function celebrate() {
             sfx.play();
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#d4af37', '#ffffff']
-            });
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff'] });
         }
     </script>
 </body>
