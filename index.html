@@ -2,6 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <!-- Meta tag ini wajib agar pas di layar HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nisa's Escape - Cinematic Medusa</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -15,16 +17,16 @@
             width: 100%; height: 100%;
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #000;
         }
 
         /* --- VIDEO BACKGROUND --- */
         #video-bg {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
             object-fit: cover;
             z-index: -1;
         }
@@ -37,12 +39,22 @@
             z-index: 0;
         }
 
-        .container { position: relative; z-index: 10; }
+        /* CONTAINER UTAMA (KUNCINYA DI SINI) */
+        .container { 
+            position: relative; 
+            z-index: 10; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* Tengah Horizontal */
+            align-items: center;    /* Tengah Vertikal */
+        }
 
         .layer {
             position: absolute;
-            width: 300px;
-            padding: 40px;
+            width: 85%; /* Lebar responsif untuk HP */
+            max-width: 340px;
+            padding: 40px 25px;
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -50,13 +62,27 @@
             border-radius: 25px;
             text-align: center;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            transform: translateY(120vh);
+            transition: all 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            
+            /* Sembunyi di awal (di bawah layar) */
             opacity: 0;
+            visibility: hidden;
+            transform: translateY(50px) scale(0.9);
         }
 
-        .layer.active { transform: translateY(-50%) scale(1); opacity: 1; }
-        .layer.out { transform: translateY(-120vh) scale(0.5); opacity: 0; }
+        /* Efek Muncul Tepat di Tengah */
+        .layer.active { 
+            opacity: 1; 
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Efek Keluar */
+        .layer.out { 
+            opacity: 0; 
+            visibility: hidden;
+            transform: translateY(-50px) scale(0.9);
+        }
 
         .img-profile {
             width: 130px; height: 130px;
@@ -72,36 +98,36 @@
 
         .btn {
             margin-top: 25px;
-            background: var(--gold);
+            background: #fff;
             color: #000;
             border: none;
-            padding: 12px 30px;
+            padding: 14px 30px;
             border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
+            width: 100%; /* Tombol lebar di HP */
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        .btn:hover { background: #fff; transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
+        .btn:hover { background: var(--gold); transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <!-- VIDEO BACKDROP -->
     <video autoplay muted loop playsinline id="video-bg">
         <source src="backdrop.mp4" type="video/mp4">
     </video>
 
     <div class="overlay-dark"></div>
 
-    <!-- AUDIO -->
     <audio id="bgm" loop><source src="sound.mp3" type="audio/mp3"></audio>
     <audio id="sfx-click"><source src="https://assets.mixkit.co/sfx/preview/mixkit-modern-technology-select-3124.mp3" type="audio/mp3"></audio>
 
     <div class="container">
         <!-- Layer 1 -->
-        <div class="layer active" id="l1" style="top: 0;">
+        <div class="layer active" id="l1">
             <img src="nisa1.jpeg" class="img-profile">
             <h1>WELCOME TO FREEDOM</h1>
             <p>Halo Mba Nisa Anggota Medusa paling kece! 6 hari ke depan, dilarang mikirin kerjaan. Titik!</p>
@@ -109,24 +135,24 @@
         </div>
 
         <!-- Layer 2 -->
-        <div class="layer" id="l2" style="top: 0;">
+        <div class="layer" id="l2">
             <h1>6 HARI ESCAPE 🌴</h1>
             <p>Nikmati liburanmu, cas dulu energinya. Medusa tanpa Mba Nisa bakal kurang satu pro-player visual nih!</p>
             <button class="btn" onclick="go(2)">NEXT SURPRISE</button>
         </div>
 
         <!-- Layer 3 -->
-        <div class="layer" id="l3" style="top: 0;">
+        <div class="layer" id="l3">
             <h1>UNO + GACOAN 🃏</h1>
             <p>Pokoknya nanti kita UNO-an bareng, terus ke Gacoan nongkrong sampe malem! Gak ada penolakan!</p>
             <button class="btn" onclick="go(3)">GASSS!</button>
         </div>
 
         <!-- Layer 4 -->
-        <div class="layer" id="l4" style="top: 0;">
+        <div class="layer" id="l4">
             <img src="nisa2.jpeg" class="img-profile">
             <h1>HATI-HATI DI JALAN! ✨</h1>
-            <p>Selamat berlibur, Mba Nisa! Pergi dengan tenang, pulang dengan senang (dan bawa oleh-oleh). See you!</p>
+            <p>Selamat berlibur, Mba Nisa! Pergi dengan tenang, pulang dengan senang. See you!</p>
             <button class="btn" onclick="celebrate()">CELEBRATE 🎉</button>
         </div>
     </div>
@@ -152,7 +178,7 @@
             if(nextLayer) {
                 setTimeout(() => {
                     nextLayer.classList.add('active');
-                }, 200);
+                }, 100);
             }
         }
 
@@ -162,7 +188,7 @@
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#d4af37', '#ffffff', '#1b4d3e']
+                colors: ['#d4af37', '#ffffff']
             });
         }
     </script>
